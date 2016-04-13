@@ -11,3 +11,6 @@ You'll need `graphlab-create` and python Telegram API wrapper for this bot. You 
 - `$ pip install python-telegram-bot`
 
 Everything's build with Python 2.7. It should also work with the Python 3, but I haven't tested it myself, so I am not so sure. 
+
+## How to:
+Plainly speaking, the bot as simple as it gets. You just send him a number of words and it will give you the estimated reading time both in seconds and in minutes.

@@ -1,6 +1,6 @@
 from __future__ import division
 import graphlab
-graphlab.product_key.set_product_key('5849-266E-F22D-662F-0EF2-69DE-DC1E-69FB')
+graphlab.product_key.set_product_key('<your product key>')
 from telegram.ext import Updater
 import logging
 
@@ -45,7 +45,7 @@ def error(bot, update, error):
 
 
 def main():
-    updater = Updater("188108083:AAExpw65y9W-jTuE4oHaflbmmfzG7lbSpdc")
+    updater = Updater("<Your telegram token")
 
     dp = updater.dispatcher
 

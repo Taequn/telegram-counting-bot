@@ -27,13 +27,18 @@ def echo(bot, update):
     try:
         print update.message.date
         words = int(update.message.text)
-        longread = {'Words':[words]}
-        prep1 = read_model.predict(graphlab.SFrame(longread))
-        prep2 = graphlab.SArray(data=prep1, dtype=str)
-        prep3 = prep2/60
-        final = ''.join(str(e) for e in prep2)
-        final1 = ''.join(str(e) for e in prep3)
-        bot.sendMessage(update.message.chat_id, 'It will take %s seconds or %s minutes' % (final, final1))
+        if words > 0:
+            longread = {'Words':[words]}
+            prep1 = read_model.predict(graphlab.SFrame(longread))
+            prep2 = graphlab.SArray(data=prep1, dtype=str)
+            prep3 = prep2/60
+            prep4 = ''.join(str(e) for e in prep2)
+            prep5 = ''.join(str(e) for e in prep3)
+            final = prep4[:prep4.find(".")+3]
+            final1 = prep5[:prep5.find(".")+3]
+            bot.sendMessage(update.message.chat_id, 'It will take %s seconds or %s minutes' % (final, final1))
+        else:
+            bot.sendMessage(update.message.chat_id, "Nope, I can't do that. Please, try again")
     except IndexError:
         bot.sendMessage(update.message.chat_id, "Are you even listening? Give me numbers!")
     except ValueError:

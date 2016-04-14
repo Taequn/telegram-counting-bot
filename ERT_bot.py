@@ -3,7 +3,6 @@ import graphlab
 graphlab.product_key.set_product_key('<your product key>')
 from telegram.ext import Updater
 import logging
-
 logging.basicConfig(
         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
         level=logging.INFO)
@@ -16,17 +15,17 @@ read_model = graphlab.linear_regression.create(read, target='Time',
                                                features=['Words'],validation_set=None)
 
 def start(bot, update):
-    bot.sendMessage(update.message.chat_id, text='Hello and welcome. All you need to do is to type a number of words.')
+    bot.sendMessage(update.message.chat_id, text='Hello and welcome. Make sure to check /help section if you have ane questions.')
 
 
 def help(bot, update):
-    bot.sendMessage(update.message.chat_id, text="OK, just type a number, that's all")
+    bot.sendMessage(update.message.chat_id, text="The bot can give you the estimated reading time based\
+        on a number of symbols you fed him. Just use /estimate command and give him a number.")
 
-
-def echo(bot, update):
+def estimate(bot, update, args):
     try:
         print update.message.date
-        words = int(update.message.text)
+        words = int(args[0])
         if words > 0:
             longread = {'Words':[words]}
             prep1 = read_model.predict(graphlab.SFrame(longread))
@@ -36,28 +35,36 @@ def echo(bot, update):
             prep5 = ''.join(str(e) for e in prep3)
             final = prep4[:prep4.find(".")+3]
             final1 = prep5[:prep5.find(".")+3]
-            bot.sendMessage(update.message.chat_id, 'It will take %s seconds or %s minutes' % (final, final1))
+            bot.sendMessage(update.message.chat_id, 'It will take %s seconds or %s minutes.' % (final, final1))
         else:
-            bot.sendMessage(update.message.chat_id, "Nope, I can't do that. Please, try again")
+            bot.sendMessage(update.message.chat_id, "Nope, I can't do that. Please, try again.")
     except IndexError:
         bot.sendMessage(update.message.chat_id, "Are you even listening? Give me numbers!")
     except ValueError:
-        bot.sendMessage(update.message.chat_id, "Are you even listening? Give me numbers!")
+        bot.sendMessage(update.message.chat_id, "_Mistakes were made_! You need to use /estimate and then feed the bot a number.", parse_mode = "Markdown")
 
+def speaking(bot, update):
+    try:
+        words = int(update.message.text)
+        if type(words) == int:
+            bot.sendMessage(update.message.chat_id, 'Please, use /estimate command to get the result.')
+    except ValueError, IndexError:
+        bot.sendMessage(update.message.chat_id, "Ok, firstly, the bot needs numbers. Secondly, make sure to use /estimate command.")
 
 def error(bot, update, error):
     logger.warn('Update "%s" caused error "%s"' % (update, error))
 
 
 def main():
-    updater = Updater("<Your telegram token")
+    updater = Updater("<your API tokern>")
 
     dp = updater.dispatcher
 
     dp.addTelegramCommandHandler("start", start)
     dp.addTelegramCommandHandler("help", help)
+    dp.addTelegramCommandHandler("estimate", estimate)
 
-    dp.addTelegramMessageHandler(echo)
+    dp.addTelegramMessageHandler(speaking)
 
     dp.addErrorHandler(error)
 

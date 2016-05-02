@@ -1,6 +1,6 @@
 from __future__ import division
 import graphlab
-graphlab.product_key.set_product_key('<your product key>')
+graphlab.product_key.set_product_key('KEY')
 from telegram.ext import Updater
 import logging
 logging.basicConfig(
@@ -56,15 +56,15 @@ def error(bot, update, error):
 
 
 def main():
-    updater = Updater("<your API tokern>")
+    updater = Updater("TOKEN")
 
     dp = updater.dispatcher
 
-    dp.addTelegramCommandHandler("start", start)
-    dp.addTelegramCommandHandler("help", help)
-    dp.addTelegramCommandHandler("estimate", estimate)
+    dp.addHandler(CommandHandler("start", start))
+    dp.addHandler(CommandHandler("help", help))
+    dp.addHandler(CommandHandler("estimate", estimate))
 
-    dp.addTelegramMessageHandler(speaking)
+    dp.addHandler(MessageHandler(speaking))
 
     dp.addErrorHandler(error)
 
